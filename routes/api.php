@@ -14,12 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('auth')->namespace('Api\Auth')->group(function () {
+    Route::post('login', 'LoginController@login');
+    Route::post('register', 'RegisterController@register');
 });
 
-Route::post('login', 'Api\AdminController@login');
-Route::post('register', 'Api\AdminController@register');
-Route::group(['middleware' => 'auth:api'], function() {
-    Route::post('profile', 'Api\AdminController@details');
+Route::prefix('admin')->middleware('auth:api')->namespace('Api\Admin')->group(function () {
+    Route::get('list-member', 'AdminController@listMember');
+    Route::post('show-member', 'AdminController@showMember');
 });
